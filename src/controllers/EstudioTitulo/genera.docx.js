@@ -83,7 +83,7 @@ async function createWordDocument(jsonData, solicitud_id) {
                         new Paragraph({
                             children: [
                                 new TextRun({ text: "RUT", ...headerFontStyle }),
-                                new TextRun({ text: `\t: ${propietario.rut}`, ...fontStyle }),
+                                new TextRun({ text: `\t\t: ${propietario.rut}`, ...fontStyle }),
                             ],
                         }),
                     ]),
@@ -92,13 +92,13 @@ async function createWordDocument(jsonData, solicitud_id) {
                     new Paragraph({
                         children: [
                             new TextRun({ text: "INMUEBLE", ...headerFontStyle }),
-                            new TextRun({ text: "\t: Decher 540, Dp 208, Bd 4, Bx 7", ...fontStyle }),
+                            new TextRun({ text: "\t\t: Decher 540, Dp 208, Bd 4, Bx 7", ...fontStyle }),
                         ],
                     }),
                     new Paragraph({
                         children: [
                             new TextRun({ text: "COMUNA", ...headerFontStyle }),
-                            new TextRun({ text: "\t: " + caratula.comuna, ...fontStyle }),
+                            new TextRun({ text: "\t\t: " + caratula.comuna, ...fontStyle }),
                         ],
                     }),
                     new Paragraph({

@@ -67,9 +67,25 @@ async function sql_get_solicitud_files(solicitud_id) {
     }
 }
 
+async function sql_patch_solicitud_files(solicitud_id) {
+    try {
+        const pool = await sql.connect(config);
+        const result = await pool.request()
+            .input('solicitud_id', sql.Int, solicitud_id)
+            .execute('[dbo].[sp_path_patch_solicitud]');
+        return result.recordset;
+    }catch (error) {
+        fnc_logger.logger('error', 'Error durante la operación en la base de datos (sql_patch_solicitud_files): ' + error.message);
+        return null;
+    }
+
+}
+
+
 module.exports = {
     sql_insert_solicitud,
     sql_insert_solicitud_files,
     sql_update_solicitud,
-    sql_get_solicitud_files
+    sql_get_solicitud_files,
+    sql_patch_solicitud_files
 }

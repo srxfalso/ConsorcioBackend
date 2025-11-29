@@ -115,11 +115,15 @@ async function updload_files(params) {
                                 }
                             ]
                         };
-                            
+                    
+                        
+                    await fnc_sql_procedure.sql_patch_solicitud_files(result_solicitud.solicitud_id);   
                     console.log('Preparando para enviar correo a:', MMensajeEmail.eto);
                     console.log('file path del adjunto:', MMensajeEmail.attachments_file_name[0].path);
                     await fnc_email.enviarCorreoConAdjunto(MMensajeEmail);
                     await fnc_util.zipFolder(outputDir, `${outputDirZIP}/${solicitud.solicitud_id}.zip`);
+
+
 
             });
             
