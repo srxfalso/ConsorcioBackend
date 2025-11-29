@@ -108,7 +108,7 @@ async function fnc_analizarPDF_openAI(file) {
         console.log(`🔍 Iniciando análisis del PDF con file_id: ${file.file_openai}`);
 
         const requestData = {
-            model: "gpt-5",
+          //  model: "gpt-5",
             prompt: {
                 id: prompt_id,
                 version: prompt_ver
@@ -213,10 +213,10 @@ async function fnc_analizarJson_openAI(JsonData) {
         console.log(`🔍 Iniciando análisis del JSON: ${JSON.stringify(JsonData)}`);
 
         const requestData = {
-            model: "gpt-5",
+          //  model: "gpt-5",
             prompt: {
-                id: "pmpt_692328fe1e8481938be75f3e4245ef45011edfd37dd99344",
-                version: "5"
+                id: process.env.INFORME_PROMPT,
+                version: process.env.INFORME_VERSION
             },
             input: [
                 {

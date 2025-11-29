@@ -6,6 +6,8 @@ const swaggerUi = require('swagger-ui-express');
 const path = require('node:path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const apiRoutes = require('./routes/binario.routes');
+const apidownloadRoutes = require('./routes/download.routes');
+
 
 const app = express();
 
@@ -66,6 +68,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Rutas
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', apiRoutes); // Ruta principal
+app.use('/api', apidownloadRoutes);
 
 // Inicialización del servidor
 const port = process.env.port || 6001;

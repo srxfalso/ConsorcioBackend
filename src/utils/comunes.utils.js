@@ -1,3 +1,20 @@
+const fs = require('node:fs');
+const archiver = require('archiver');
+
+function zipFolder(sourceFolder, outPath) {
+  const output = fs.createWriteStream(outPath);
+  const archive = archiver('zip', { zlib: { level: 9 } }); // nivel máximo de compresión
+
+  return new Promise((resolve, reject) => {
+    output.on('close', () => resolve());
+    archive.on('error', err => reject(err));
+
+    archive.pipe(output);
+    archive.directory(sourceFolder, false); // carpeta completa
+    archive.finalize();
+  });
+}
+
 async function getFormattedDate() {
     const now = new Date();
     const year = now.getFullYear().toString(); // Año
@@ -38,5 +55,6 @@ function getFechaLarga() {
 module.exports = {
     getFormattedDate,
     getcapitalizarTexto,
-    getFechaLarga
-};
+    getFechaLarga,
+    zipFolder
+  };

@@ -55,8 +55,21 @@ async function sql_insert_solicitud_files(file) {
     }
 }
 
+async function sql_get_solicitud_files(solicitud_id) {
+    try {
+        const pool = await sql.connect(config);
+        const result = await pool.request()
+            .execute('[dbo].[sp_get_solicitud]');
+        return result.recordset;
+    } catch (error) {
+        fnc_logger.logger('error', 'Error durante la operación en la base de datos (sql_get_solicitud_files): ' + error.message);
+        return null;
+    }
+}
+
 module.exports = {
     sql_insert_solicitud,
     sql_insert_solicitud_files,
-    sql_update_solicitud
+    sql_update_solicitud,
+    sql_get_solicitud_files
 }

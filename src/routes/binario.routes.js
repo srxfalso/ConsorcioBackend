@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const fnc_upload = require('../controllers/upload.controllers');
+const fnc_upload = require('../controllers/upload.controller');
 
 // Ruta para crear un nuevo binario
 require('../schemas/files/upload.schemas');

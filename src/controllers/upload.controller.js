@@ -1,10 +1,10 @@
-const fnc_OpenAi= require('../controllers/OpenAi/files.openAi');
-const fnc_fsbinario = require('../controllers/Binarios/files.binarios');
-const fnc_estudio_titulo = require('../controllers/EstudioTitulo/generaEstudioTitulo');
-const fnc_docx = require('../controllers/EstudioTitulo/genera.docx');
-const fnc_sql_procedure= require('../controllers/SQL/procedure.sql');
+const fnc_OpenAi= require('./OpenAi/files.openAi');
+const fnc_fsbinario = require('./Binarios/files.binarios');
+const fnc_estudio_titulo = require('./EstudioTitulo/generaEstudioTitulo');
+const fnc_docx = require('./EstudioTitulo/genera.docx');
+const fnc_sql_procedure= require('./SQL/procedure.sql');
 const fnc_email= require('../utils/sfnc_emailsmtp.utils');
-
+const fnc_util = require('../utils/comunes.utils')
 const fnc_logger = require('../utils/logger.utils');
 const { DocumentBackground } = require('docx');
 const fs = require('node:fs').promises;
@@ -78,19 +78,20 @@ async function updload_files(params) {
                         "documentos": documentos
                     };
 
-                  /*   const outputDirOut = path.join(__dirname, '../docs/gestion_docs/',solicitud.solicitud_id.toString());
+                    const outputDirOut = path.join(__dirname, '../docs/gestion_docs/',solicitud.solicitud_id.toString());
                     // Crear directorio si no existe
                     await fs.mkdir(outputDirOut, { recursive: true });
                     const filenameout = `input_prompt_${result_solicitud.solicitud_id}_${Date.now()}.json`;
                     const filepathout = path.join(outputDirOut, filenameout);
                     await fs.writeFile(filepathout, JSON.stringify(bodyjson, null, 2), 'utf-8');
 
-                */
+                
 
                 const OpenAiJson = await fnc_OpenAi.fnc_analizarJson_openAI(bodyjson);
                 console.log('Resultado del análisis del JSON completo:', JSON.stringify( OpenAiJson,null,2));
 
                     const outputDir = path.join(__dirname, '../docs/gestion_docs/',solicitud.solicitud_id.toString());
+                    const outputDirZIP = path.join(__dirname, '../docs/gestion_docs/');
                     
                     // Crear directorio si no existe
                     await fs.mkdir(outputDir, { recursive: true });
@@ -100,28 +101,25 @@ async function updload_files(params) {
                     
                     await fs.writeFile(filepath, JSON.stringify(OpenAiJson.data, null, 2), 'utf-8');
                     
-
-
-                const pathdocx = await fnc_docx.createWordDocument(OpenAiJson.data,solicitud.solicitud_id);
-                //const result_estudio_titulo = await fnc_estudio_titulo.generarEstudioTitulo(OpenAiJson.data);
-                //console.log('Resultado de la generación del Estudio de Título:', result_estudio_titulo);
-
-                const MMensajeEmail = {
-                    eto: solicitud.email,
-                    esubject: "Envío de Documentos - Informe de Título",
-                    etext: "Adjunto encontrará los documentos solicitados.",
-                    //ehtml: data.plantilla,
-                    attachments_file_name: [
-                        {
-                            filename: 'Informe_de_Titulo.docx',
-                            path: pathdocx
-                        }
-                    ]
-                };
-               
-               console.log('Preparando para enviar correo a:', MMensajeEmail.eto);
-               console.log('file path del adjunto:', MMensajeEmail.attachments_file_name[0].path);
-               await fnc_email.enviarCorreoConAdjunto(MMensajeEmail);
+                    const pathdocx = await fnc_docx.createWordDocument(OpenAiJson.data,solicitud.solicitud_id);
+              
+                        const MMensajeEmail = {
+                            eto: solicitud.email,
+                            esubject: "Envío de Documentos - Informe de Título",
+                            etext: "Adjunto encontrará los documentos solicitados.",
+                            //ehtml: data.plantilla,
+                            attachments_file_name: [
+                                {
+                                    filename: 'Informe_de_Titulo.docx',
+                                    path: pathdocx
+                                }
+                            ]
+                        };
+                            
+                    console.log('Preparando para enviar correo a:', MMensajeEmail.eto);
+                    console.log('file path del adjunto:', MMensajeEmail.attachments_file_name[0].path);
+                    await fnc_email.enviarCorreoConAdjunto(MMensajeEmail);
+                    await fnc_util.zipFolder(outputDir, `${outputDirZIP}/${solicitud.solicitud_id}.zip`);
 
             });
             
@@ -132,6 +130,8 @@ async function updload_files(params) {
         return { success: false, error: error.message };
     }
 }
+
+
 
 module.exports={
     updload_files

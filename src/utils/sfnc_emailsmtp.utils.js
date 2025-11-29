@@ -55,7 +55,7 @@ async function enviarCorreoConAdjunto(MMensajeEmail) {
       })),
     });
     console.log('Correo con adjunto enviado:', info);
-    logger.logger('info', `EnviarCorreoConAdjunto exitoso: ${info.messageId}`);
+    logger.logger('exito', `EnviarCorreoConAdjunto exitoso: ${info.messageId}`);
      
   } catch (error) {
     console.log('Correo no enviado:', error.message);
