@@ -1,0 +1,43 @@
+{
+  "name": "consorciobackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/api.js",
+  "scripts": {
+    "start": "nodemon src/api.js"
+  },
+  "dependencies": {
+    "api-key-auth": "^0.2.3",
+    "archiver": "^7.0.1",
+    "axios": "^0.21.1",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.19.0",
+    "cors": "2.8.1",
+    "docx": "^9.5.1",
+    "docx-templates": "^4.14.1",
+    "docxtemplater": "^3.63.0",
+    "dotenv": "^16.5.0",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "html-pdf": "^3.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mssql": "^6.2.1",
+    "nodemailer": "^6.10.1",
+    "numero-a-letras": "^1.0.6",
+    "path": "^0.12.7",
+    "pdfkit": "^0.17.2",
+    "pizzip": "^3.2.0",
+    "puppeteer": "^24.2.1",
+    "soap": "^1.1.11",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

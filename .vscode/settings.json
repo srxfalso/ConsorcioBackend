@@ -1,0 +1,23 @@
+{
+    "sqltools.connections": [
+        {
+            "connectionTimeout": 15,
+            "mssqlOptions": {
+                "appName": "SQLTools",
+                "useUTC": false,
+                "encrypt": false,
+                "trustServerCertificate": false
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "gestionaideas.com",
+            "port": 1433,
+            "driver": "MSSQL",
+            "name": "SQL Estudio Titulo",
+            "group": "GestionaIdeas",
+            "database": "app_estudio_titulos",
+            "username": "us_estudio_titulos",
+            "password": "ZuoEkEUzOx[xk&.V~kI2"
+        }
+    ]
+}
