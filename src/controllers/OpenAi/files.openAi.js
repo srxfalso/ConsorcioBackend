@@ -307,9 +307,115 @@ async function fnc_analizarJson_openAI(JsonData) {
     }
 }
 
+async function fnc_analizarJson_escritura_openAI(JsonData) {
+   
+    try {
+        console.log(`🔍 Iniciando análisis del JSON: ${JSON.stringify(JsonData)}`);
+
+        const requestData = {
+          //  model: "gpt-5",
+            prompt: {
+                id: process.env.INFORME_ESCRITURA_PROMPT,
+                version: process.env.INFORME_ESCRITURA_VERSION
+            },
+            input: [
+                {
+                    role: "user",
+                    content: [
+                        {
+                            type: "input_text",
+                            text: "Analiza el JSON:" + JSON.stringify(JsonData)
+                        } ,
+                        {
+                            type: "input_file",
+                            file_id: "file-Jqpxcqr2EZQHgKdV4E7jmV"
+                        }
+                    ]
+                }
+            ],
+            "max_output_tokens": 6048
+        };
+
+        const response = await axios.post("https://api.openai.com/v1/responses", requestData, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`,
+            },
+            timeout: Number.parseInt(timeout) || 300000 // 5 minutos
+        });
+
+        console.log("✅ Análisis completado:", response.data.status);
+       
+
+        // Buscar el mensaje del assistant
+        const assistantMessage = response.data.output?.find(
+            item => item.type === "message" && 
+                   item.role === "assistant" && 
+                   Array.isArray(item.content)
+        );
+
+        // Buscar el contenido de texto
+        const textContent = assistantMessage?.content?.find(
+            content => content.type === "output_text" && content.text
+        );
+
+        if (textContent?.text) {
+            console.log('📄 Contenido extraído de OpenAI:', textContent.text.substring(0, 1000) + '...');
+
+            try {
+                const extractedData = extractJSON(textContent.text);
+                console.log("✅ JSON parseado exitosamente");
+                
+                return {
+                    success: true,
+                    data: extractedData,
+                    response_id: response.data.id,
+                    usage: response.data.usage
+                };
+            } catch (parseError) {
+                return {
+                    success: false,
+                    error: "Error parseando el JSON de respuesta",
+                    raw_text: textContent.text,
+                    parse_error: parseError.message
+                };
+            }
+        }
+
+        // Respuesta inesperada
+        console.error("❌ Estructura de respuesta inesperada");
+        return {
+            success: false,
+            error: "No se encontró contenido JSON en la respuesta",
+            response_structure: {
+                has_output: !!response.data.output,
+                output_length: response.data.output?.length || 0,
+                output_types: response.data.output?.map(item => item.type) || []
+            }
+        };
+    } catch (error) {
+        const errorMsg = error.response?.data?.error?.message || error.message;
+        console.error("❌ Error analizando PDF:", errorMsg);
+        
+        // ✅ Loguear detalles del error para debugging
+        if (error.response?.data) {
+            console.error("Detalles del error de API:", error.response.data);
+        }
+        
+        fnc_logger.logger('error', `Error en fnc_analizarPDF_openAI para file_id ${file_id}: ${errorMsg}`);
+        
+        return {
+            success: false,
+            error: errorMsg,
+            error_details: error.response?.data
+        };
+    }
+}
+
 
 module.exports = {
     fnc_uploadPDF_openAI,
     fnc_analizarPDF_openAI,
-    fnc_analizarJson_openAI
+    fnc_analizarJson_openAI,
+    fnc_analizarJson_escritura_openAI
 };

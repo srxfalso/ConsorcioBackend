@@ -2,6 +2,7 @@ const fnc_OpenAi= require('./OpenAi/files.openAi');
 const fnc_fsbinario = require('./Binarios/files.binarios');
 const fnc_estudio_titulo = require('./EstudioTitulo/generaEstudioTitulo');
 const fnc_docx = require('./EstudioTitulo/genera.docx');
+const fnc_escritura = require('./Escritura/escritura.controller');
 const fnc_sql_procedure= require('./SQL/procedure.sql');
 const fnc_email= require('../utils/sfnc_emailsmtp.utils');
 const fnc_util = require('../utils/comunes.utils')
@@ -118,6 +119,15 @@ async function updload_files(params) {
                     
                         
                     await fnc_sql_procedure.sql_patch_solicitud_files(result_solicitud.solicitud_id);   
+                    const OpenAiEscrituraJson = await fnc_OpenAi.fnc_analizarJson_escritura_openAI(bodyjson);
+                    
+                    const filename2 = `escritura_${result_solicitud.solicitud_id}_${Date.now()}.json`;
+                    const filepath2 = path.join(outputDir, filename2);
+
+                    await fs.writeFile(filepath2, JSON.stringify(OpenAiEscrituraJson.data, null, 2), 'utf-8');
+
+                    fnc_escritura.editarDocumentoDocx(OpenAiEscrituraJson.data,solicitud.solicitud_id);
+
                     console.log('Preparando para enviar correo a:', MMensajeEmail.eto);
                     console.log('file path del adjunto:', MMensajeEmail.attachments_file_name[0].path);
                     await fnc_email.enviarCorreoConAdjunto(MMensajeEmail);
